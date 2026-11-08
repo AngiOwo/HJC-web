@@ -92,6 +92,11 @@ function requiereLogin(req, res, next) {
     res.status(401).json({ ok: false, error: 'No autorizado. Inicia sesión.' });
 }
 
+// ===== RUTA RAÍZ PRINCIPAL =====
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 // ===== RUTAS DE AUTENTICACIÓN =====
 app.post('/api/login', (req, res) => {
     const { user, pass } = req.body;
@@ -181,7 +186,5 @@ app.use((err, req, res, next) => {
 
 // ===== INICIAR SERVIDOR =====
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor HJC corriendo en http://localhost:${PORT}`);
-    console.log(`🔑 Login: http://localhost:${PORT}/login.html`);
-    console.log(`🛠️  Admin: http://localhost:${PORT}/admin.html`);
+    console.log(`🚀 Servidor HJC corriendo en el puerto ${PORT}`);
 });
