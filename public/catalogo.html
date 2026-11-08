@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | HJC</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo-hjc.jpg" alt="HJC Logotipo">
+            </a>
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html" class="active">Catálogo</a></li>
+                    <li><a href="galeria.html">Galería</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+            <a href="https://wa.me/5554735491?text=Hola%20HJC,%20me%20interesa%20personalizar%20un%20artículo" 
+               target="_blank" class="btn btn-whatsapp header-cta">💬 WhatsApp</a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== CATÁLOGO ===== -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Nuestro Catálogo</h1>
+            <p>Explora nuestros productos personalizables de la más alta calidad</p>
+        </div>
+    </section>
+
+    <section class="catalogo">
+        <div class="container">
+
+            <!-- Filtros Modificados con la nueva categoría -->
+            <div class="filtros">
+                <button class="filtro-btn active" data-categoria="todos">Todos</button>
+                <button class="filtro-btn" data-categoria="vasos">Vasos</button>
+                <button class="filtro-btn" data-categoria="vinil">Tonos de Vinil</button>
+                <button class="filtro-btn" data-categoria="llaveros">Llaveros</button>
+                <button class="filtro-btn" data-categoria="destapadores">Destapadores</button>
+                <!-- NUEVA CATEGORÍA -->
+                <button class="filtro-btn" data-categoria="pulseras">Pulsera Pvc y otros</button>
+            </div>
+
+            <!-- Grid de productos -->
+            <div class="grid-productos" id="grid-productos">
+                
+                <!-- Producto estático de ejemplo (Vasos) -->
+                <article class="card-producto" data-categoria="vasos">
+                    <div class="card-img">
+                        <img src="img/productos/vaso1.jpg" alt="Vaso Personalizado"
+                             onerror="this.src='https://via.placeholder.com/400x300/0a192f/d4af37?text=Vaso+Personalizado'">
+                    </div>
+                    <div class="card-body">
+                        <h3>Vasos</h3>
+                        <p>Vasos térmicos con diseño personalizado y detalles en vinil de alta duración.</p>
+                        <a href="https://wa.me/5554735491?text=Hola,%20me%20interesa%20un%20Vaso%20Personalizado" 
+                           target="_blank" class="btn btn-whatsapp btn-sm">Solicitar</a>
+                    </div>
+                </article>
+
+            </div>
+
+            <p class="nota-catalogo">
+                ✨ Todos los productos son personalizables a tu gusto. ¡Pregúntanos por diseños exclusivos!
+            </p>
+            <div class="center">
+                <a href="https://wa.me/5554735491?text=Hola,%20quiero%20solicitar%20una%20personalización" 
+                   target="_blank" class="btn btn-primary">Solicitar Personalización</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h3>HJC</h3>
+                <p>Diseño y personalización de artículos únicos.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="galeria.html">Galería</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p>📞 55 5473 5491</p>
+                <p>📧 Juliocesardelvallelopez6@gmail.com</p>
+                <p>📍 Del Caracol 99, Lote 104, San Pablo de las Salinas, Méx.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 HJC. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+
+    <!-- SCRIPT UNIFICADO: CARGA Y FILTRA -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('grid-productos');
+            
+            // 1. CARGAR IMÁGENES DESDE EL SERVIDOR
+            try {
+                const response = await fetch('/api/imagenes');
+                const data = await response.json();
+                
+                if (data.ok && data.imagenes.length > 0) {
+                    data.imagenes.forEach(img => {
+                        // DETECCIÓN DE CATEGORÍAS ACTUALIZADA
+                        let categoria = 'otros';
+                        const nombreMin = img.nombreOriginal.toLowerCase();
+                        
+                        if (nombreMin.includes('vaso') || nombreMin.includes('taza')) {
+                            categoria = 'vasos';
+                        } else if (nombreMin.includes('vinil') || nombreMin.includes('tono')) {
+                            categoria = 'vinil';
+                        } else if (nombreMin.includes('llavero')) {
+                            categoria = 'llaveros';
+                        } else if (nombreMin.includes('destapador')) {
+                            categoria = 'destapadores';
+                        } else if (nombreMin.includes('pulsera') || nombreMin.includes('pvc') || nombreMin.includes('otros')) {
+                            // NUEVA CATEGORÍA
+                            categoria = 'pulseras';
+                        }
+                        
+                        // Limpiamos el nombre para que se vea bonito
+                        const titulo = img.nombreOriginal.replace(/\.[^/.]+$/, "").replace(/-/g, " ");
+                        
+                        const card = document.createElement('article');
+                        card.className = 'card-producto';
+                        card.dataset.categoria = categoria;
+                        
+                        // Creamos la tarjeta
+                        card.innerHTML = `
+                            <div class="card-img">
+                                <img src="${img.url}" alt="${titulo}">
+                            </div>
+                            <div class="card-body">
+                                <h3 style="text-transform: capitalize;">${titulo}</h3>
+                                <p>Producto personalizable HJC.</p>
+                                <a href="https://wa.me/5554735491?text=Hola,%20me%20interesa%20el%20producto:%20${encodeURIComponent(titulo)}" 
+                                   target="_blank" class="btn btn-whatsapp btn-sm">
+                                   Solicitar
+                                </a>
+                            </div>
+                        `;
+                        
+                        grid.appendChild(card);
+                    });
+                }
+            } catch (error) {
+                console.error("Error al cargar imágenes:", error);
+            }
+
+            // 2. ACTIVAR LOS FILTROS
+            const filtros = document.querySelectorAll('.filtro-btn');
+            const productos = document.querySelectorAll('#grid-productos .card-producto');
+
+            filtros.forEach(boton => {
+                boton.addEventListener('click', () => {
+                    filtros.forEach(b => b.classList.remove('active'));
+                    boton.classList.add('active');
+
+                    const categoriaSeleccionada = boton.dataset.categoria;
+
+                    productos.forEach(producto => {
+                        const categoriaProducto = producto.dataset.categoria;
+                        
+                        if (categoriaSeleccionada === 'todos' || categoriaProducto === categoriaSeleccionada) {
+                            producto.style.display = 'block';
+                            producto.style.animation = 'fadeIn 0.4s ease';
+                        } else {
+                            producto.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | HJC</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo-hjc.jpg" alt="HJC Logotipo">
+            </a>
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="galeria.html">Galería</a></li>
+                    <li><a href="contacto.html" class="active">Contacto</a></li>
+                </ul>
+            </nav>
+            <a href="https://wa.me/5554735491?text=Hola%20HJC,%20me%20interesa%20personalizar%20un%20artículo" 
+               target="_blank" class="btn btn-whatsapp header-cta">💬 WhatsApp</a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTACTO -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Contáctanos</h1>
+            <p>Estamos listos para ayudarte</p>
+        </div>
+    </section>
+
+    <section class="contacto">
+        <div class="container contacto-grid">
+
+            <!-- Info -->
+            <div class="contacto-info">
+                <h2>Información de Contacto</h2>
+                <ul class="info-lista">
+                    <li>
+                        <span class="icono">📞</span>
+                        <div>
+                            <strong>Teléfono</strong>
+                            <p>55 5473 5491</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icono">📧</span>
+                        <div>
+                            <strong>Correo</strong>
+                            <p>Juliocesardelvallelopez6@gmail.com</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icono">📍</span>
+                        <div>
+                            <strong>Ubicación</strong>
+                            <p>Del Caracol 99, Lote 104, San Pablo de las Salinas, Méx.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icono">💬</span>
+                        <div>
+                            <strong>WhatsApp</strong>
+                            <p>Atención directa por mensaje</p>
+                        </div>
+                    </li>
+                </ul>
+
+                <a href="https://wa.me/5554735491?text=Hola%20HJC,%20me%20interesa%20personalizar%20un%20artículo" 
+                   target="_blank" class="btn btn-whatsapp btn-lg mt-20">
+                    💬 Escríbenos por WhatsApp
+                </a>
+            </div>
+
+            <!-- Formulario -->
+            <div class="contacto-form">
+                <h2>Envíanos un Mensaje</h2>
+                <form id="formulario-contacto">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="correo">Correo</label>
+                        <input type="email" id="correo" name="correo" required placeholder="tu@correo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje</label>
+                        <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Cuéntanos qué necesitas..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Enviar Mensaje</button>
+                </form>
+                <p class="form-nota">* También puedes contactarnos directamente por WhatsApp.</p>
+            </div>
+
+        </div>
+
+        <!-- Mapa -->
+        <div class="container mt-40">
+            <h2 class="center">Nuestra Ubicación</h2>
+            <div class="mapa">
+                <iframe 
+                    src="https://maps.google.com/maps?q=Del%20Caracol%2099%2C%20Lote%20104%2C%20San%20Pablo%20de%20las%20Salinas%2C%20Estado%20de%20Mexico%2C%20Mexico&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                    width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy">
+                </iframe>
+            </div>
+            <p class="center mt-20">Del Caracol 99, Lote 104, San Pablo de las Salinas, Méx.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h3>HJC</h3>
+                <p>Diseño y personalización de artículos únicos.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="galeria.html">Galería</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p>📞 55 5473 5491</p>
+                <p>📧 Juliocesardelvallelopez6@gmail.com</p>
+                <p>📍 Del Caracol 99, Lote 104, San Pablo de las Salinas, Méx.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 HJC. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

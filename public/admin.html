@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | HJC</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+    <header class="admin-header">
+        <div class="container admin-header-container">
+            <h1>HJC <span>Admin</span></h1>
+            <div class="admin-header-right">
+                <span id="user-info" class="user-info">Cargando...</span>
+                <button id="btn-logout" class="btn btn-outline btn-sm">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container admin-main">
+
+        <!-- ZONA DE SUBIDA -->
+        <section class="admin-card">
+            <h2>📤 Subir Imágenes</h2>
+            <p class="admin-sub">Puedes seleccionar o arrastrar <strong>hasta 10 imágenes a la vez</strong>.</p>
+
+            <div id="drop-zone" class="drop-zone">
+                <p class="drop-text">Arrastra tus imágenes aquí o</p>
+                <label for="file-input" class="btn btn-primary">Seleccionar archivos</label>
+                <input type="file" id="file-input" accept="image/*" multiple hidden>
+                <p class="drop-hint">JPG, PNG, WEBP o GIF · Máx. 5 MB por imagen</p>
+            </div>
+
+            <div id="preview-container" class="preview-container" hidden>
+                <img id="preview-img" alt="Vista previa">
+                <p id="preview-name" class="preview-name"></p>
+                <button id="btn-upload" class="btn btn-whatsapp">✅ Subir imagen(es)</button>
+                <button id="btn-cancel" class="btn btn-outline">Cancelar</button>
+            </div>
+
+            <p id="upload-status" class="upload-status"></p>
+        </section>
+
+        <!-- GALERÍA DE IMÁGENES SUBIDAS -->
+        <section class="admin-card">
+            <h2>🖼️ Imágenes Subidas</h2>
+            <p class="admin-sub">Haz clic en el nombre para copiar la URL pública.</p>
+            <div id="galeria-admin" class="galeria-admin">
+                <p class="vacio">Cargando imágenes...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

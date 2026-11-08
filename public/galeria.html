@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería | HJC</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="img/logo-hjc.jpg" alt="HJC Logotipo">
+            </a>
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="galeria.html" class="active">Galería</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+            <a href="https://wa.me/5554735491?text=Hola%20HJC,%20me%20interesa%20personalizar%20un%20artículo" 
+               target="_blank" class="btn btn-whatsapp header-cta">💬 WhatsApp</a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- GALERÍA -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Galería de Trabajos Personalizados</h1>
+            <p>Algunos de los diseños que hemos creado</p>
+        </div>
+    </section>
+
+    <section class="galeria">
+        <div class="container">
+            <!-- Aquí se inyectarán las imágenes dinámicamente -->
+            <div class="grid-galeria" id="grid-galeria">
+                <p class="vacio" style="text-align:center; width:100%;">Cargando imágenes...</p>
+            </div>
+
+            <div class="center mt-40">
+                <h3>¿Tienes una idea en mente?</h3>
+                <p>Cuéntanos qué imaginas y lo hacemos realidad.</p>
+                <a href="https://wa.me/5554735491?text=Hola,%20tengo%20una%20idea%20para%20un%20diseño%20personalizado" 
+                   target="_blank" class="btn btn-whatsapp btn-lg">
+                    💬 Cuéntanos tu idea
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h3>HJC</h3>
+                <p>Diseño y personalización de artículos únicos.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="galeria.html">Galería</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p>📞 55 5473 5491</p>
+                <p>📧 Juliocesardelvallelopez6@gmail.com</p>
+                <p>📍 Del Caracol 99, Lote 104, San Pablo de las Salinas, Méx.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 HJC. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+
+    <!-- SCRIPT: CARGAR IMÁGENES DESDE EL SERVIDOR A LA GALERÍA -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const gridGaleria = document.getElementById('grid-galeria');
+            
+            try {
+                const response = await fetch('/api/imagenes');
+                const data = await response.json();
+                
+                if (data.ok && data.imagenes.length > 0) {
+                    gridGaleria.innerHTML = '';
+                    
+                    data.imagenes.forEach(img => {
+                        const item = document.createElement('div');
+                        item.className = 'galeria-item';
+                        item.innerHTML = `<img src="${img.url}" alt="${img.nombreOriginal}">`;
+                        
+                        item.addEventListener('click', () => {
+                            window.open(img.url, '_blank');
+                        });
+                        
+                        gridGaleria.appendChild(item);
+                    });
+                } else {
+                    gridGaleria.innerHTML = '<p class="vacio" style="text-align:center; width:100%;">Aún no hay imágenes en la galería. Sube algunas desde el panel de administración.</p>';
+                }
+            } catch (error) {
+                console.error("Error al cargar la galería:", error);
+                gridGaleria.innerHTML = '<p class="vacio" style="text-align:center; width:100%; color: red;">Error de conexión al cargar las imágenes.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
