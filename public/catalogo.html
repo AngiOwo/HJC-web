@@ -7,6 +7,64 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ===== LIGHTBOX ===== */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.93);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            cursor: zoom-out;
+            animation: lbFade 0.25s ease;
+        }
+        .lightbox[hidden] { display: none; }
+
+        .lightbox-img {
+            max-width: 92vw;
+            max-height: 88vh;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            border: 2px solid var(--secundario);
+            animation: lbZoom 0.3s ease;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 22px;
+            right: 26px;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--secundario);
+            border: 2px solid var(--secundario);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: var(--transicion);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .lightbox-close:hover {
+            background: var(--secundario);
+            color: var(--fondo-oscuro);
+            transform: rotate(90deg);
+        }
+        @keyframes lbFade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes lbZoom { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        .card-img img { cursor: zoom-in; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 
@@ -43,30 +101,28 @@
     <section class="catalogo">
         <div class="container">
 
-            <!-- Filtros Modificados con la nueva categoría -->
+            <!-- Filtros actualizados -->
             <div class="filtros">
                 <button class="filtro-btn active" data-categoria="todos">Todos</button>
-                <button class="filtro-btn" data-categoria="vasos">Vasos</button>
-                <button class="filtro-btn" data-categoria="vinil">Tonos de Vinil</button>
+                <button class="filtro-btn" data-categoria="vasos-vinil">Color de Vasos y Tonos de Vinil</button>
                 <button class="filtro-btn" data-categoria="llaveros">Llaveros</button>
                 <button class="filtro-btn" data-categoria="destapadores">Destapadores</button>
-                <!-- NUEVA CATEGORÍA -->
-                <button class="filtro-btn" data-categoria="pulseras">Pulsera Pvc y otros</button>
+                <button class="filtro-btn" data-categoria="pulseras">Pulseras PVC y otros</button>
             </div>
 
             <!-- Grid de productos -->
             <div class="grid-productos" id="grid-productos">
                 
-                <!-- Producto estático de ejemplo (Vasos) -->
-                <article class="card-producto" data-categoria="vasos">
+                <!-- Producto estático de ejemplo -->
+                <article class="card-producto" data-categoria="vasos-vinil">
                     <div class="card-img">
-                        <img src="img/productos/vaso1.jpg" alt="Vaso Personalizado"
-                             onerror="this.src='https://via.placeholder.com/400x300/0a192f/d4af37?text=Vaso+Personalizado'">
+                        <img src="img/productos/vaso1.jpg" alt="Vasos y Vinil"
+                             onerror="this.src='https://via.placeholder.com/400x300/0a192f/d4af37?text=Vasos+y+Vinil'">
                     </div>
                     <div class="card-body">
-                        <h3>Vasos</h3>
-                        <p>Vasos térmicos con diseño personalizado y detalles en vinil de alta duración.</p>
-                        <a href="https://wa.me/5554735491?text=Hola,%20me%20interesa%20un%20Vaso%20Personalizado" 
+                        <h3>Vasos y Vinil</h3>
+                        <p>Vasos térmicos y detalles en vinil con diseño personalizado de alta duración.</p>
+                        <a href="https://wa.me/5554735491?text=Hola,%20me%20interesa%20un%20Vaso%20o%20Vinil%20Personalizado" 
                            target="_blank" class="btn btn-whatsapp btn-sm">Solicitar</a>
                     </div>
                 </article>
@@ -111,45 +167,69 @@
         </div>
     </footer>
 
+    <!-- LIGHTBOX -->
+    <div id="lightbox" class="lightbox" hidden>
+        <button class="lightbox-close" aria-label="Cerrar">✕</button>
+        <img id="lightbox-img" class="lightbox-img" alt="Vista previa">
+    </div>
+
     <script src="js/main.js"></script>
 
-    <!-- SCRIPT UNIFICADO: CARGA Y FILTRA -->
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const grid = document.getElementById('grid-productos');
-            
-            // 1. CARGAR IMÁGENES DESDE EL SERVIDOR
+            const lightbox    = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const btnClose    = lightbox.querySelector('.lightbox-close');
+
+            // ===== LIGHTBOX =====
+            function abrirLightbox(src) {
+                lightboxImg.src = src;
+                lightbox.hidden = false;
+                document.body.style.overflow = 'hidden';
+            }
+            function cerrarLightbox() {
+                lightbox.hidden = true;
+                lightboxImg.src = '';
+                document.body.style.overflow = '';
+            }
+            btnClose.addEventListener('click', cerrarLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) cerrarLightbox();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !lightbox.hidden) cerrarLightbox();
+            });
+
+            // ===== 1. CARGAR IMÁGENES =====
             try {
                 const response = await fetch('/api/imagenes');
                 const data = await response.json();
-                
+
                 if (data.ok && data.imagenes.length > 0) {
                     data.imagenes.forEach(img => {
-                        // DETECCIÓN DE CATEGORÍAS ACTUALIZADA
                         let categoria = 'otros';
                         const nombreMin = img.nombreOriginal.toLowerCase();
-                        
-                        if (nombreMin.includes('vaso') || nombreMin.includes('taza')) {
-                            categoria = 'vasos';
-                        } else if (nombreMin.includes('vinil') || nombreMin.includes('tono')) {
-                            categoria = 'vinil';
+
+                        // VASOS + VINIL ahora son la misma categoría
+                        if (nombreMin.includes('vaso') || nombreMin.includes('taza') ||
+                            nombreMin.includes('vinil') || nombreMin.includes('tono')) {
+                            categoria = 'vasos-vinil';
                         } else if (nombreMin.includes('llavero')) {
                             categoria = 'llaveros';
                         } else if (nombreMin.includes('destapador')) {
                             categoria = 'destapadores';
-                        } else if (nombreMin.includes('pulsera') || nombreMin.includes('pvc') || nombreMin.includes('otros')) {
-                            // NUEVA CATEGORÍA
+                        } else if (nombreMin.includes('pulsera') || nombreMin.includes('pvc') ||
+                                   nombreMin.includes('otros')) {
                             categoria = 'pulseras';
                         }
-                        
-                        // Limpiamos el nombre para que se vea bonito
+
                         const titulo = img.nombreOriginal.replace(/\.[^/.]+$/, "").replace(/-/g, " ");
-                        
+
                         const card = document.createElement('article');
                         card.className = 'card-producto';
                         card.dataset.categoria = categoria;
-                        
-                        // Creamos la tarjeta
+
                         card.innerHTML = `
                             <div class="card-img">
                                 <img src="${img.url}" alt="${titulo}">
@@ -163,7 +243,7 @@
                                 </a>
                             </div>
                         `;
-                        
+
                         grid.appendChild(card);
                     });
                 }
@@ -171,8 +251,13 @@
                 console.error("Error al cargar imágenes:", error);
             }
 
-            // 2. ACTIVAR LOS FILTROS
-            const filtros = document.querySelectorAll('.filtro-btn');
+            // ===== 2. LIGHTBOX PARA TODAS LAS IMÁGENES (estáticas + dinámicas) =====
+            grid.querySelectorAll('.card-img img').forEach(img => {
+                img.addEventListener('click', () => abrirLightbox(img.src));
+            });
+
+            // ===== 3. FILTROS =====
+            const filtros  = document.querySelectorAll('.filtro-btn');
             const productos = document.querySelectorAll('#grid-productos .card-producto');
 
             filtros.forEach(boton => {
@@ -180,12 +265,10 @@
                     filtros.forEach(b => b.classList.remove('active'));
                     boton.classList.add('active');
 
-                    const categoriaSeleccionada = boton.dataset.categoria;
+                    const seleccion = boton.dataset.categoria;
 
                     productos.forEach(producto => {
-                        const categoriaProducto = producto.dataset.categoria;
-                        
-                        if (categoriaSeleccionada === 'todos' || categoriaProducto === categoriaSeleccionada) {
+                        if (seleccion === 'todos' || producto.dataset.categoria === seleccion) {
                             producto.style.display = 'block';
                             producto.style.animation = 'fadeIn 0.4s ease';
                         } else {
@@ -196,12 +279,5 @@
             });
         });
     </script>
-    
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </body>
 </html>
