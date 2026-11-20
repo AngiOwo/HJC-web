@@ -58,7 +58,7 @@
         @keyframes lbFade { from { opacity: 0; } to { opacity: 1; } }
         @keyframes lbZoom { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        .galeria-item { cursor: zoom-in; }
+        .galeria-item img { cursor: zoom-in; }
     </style>
 </head>
 <body>
@@ -138,7 +138,7 @@
         </div>
     </footer>
 
-    <!-- LIGHTBOX -->
+    <!-- LIGHTBOX HTML -->
     <div id="lightbox" class="lightbox" hidden>
         <button class="lightbox-close" aria-label="Cerrar">✕</button>
         <img id="lightbox-img" class="lightbox-img" alt="Vista previa">
@@ -147,32 +147,38 @@
     <script src="js/main.js"></script>
 
     <script>
+        // Declaramos las variables del Lightbox de forma global
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const btnClose = document.querySelector('.lightbox-close');
+
+        // Función para abrir (accesible desde cualquier lado)
+        window.abrirLightbox = function(url) {
+            lightboxImg.src = url;
+            lightbox.hidden = false;
+            document.body.style.overflow = 'hidden'; // Evita scroll de fondo
+        };
+
+        // Función para cerrar
+        function cerrarLightbox() {
+            lightbox.hidden = true;
+            lightboxImg.src = '';
+            document.body.style.overflow = '';
+        }
+
+        // Eventos para cerrar el lightbox
+        btnClose.addEventListener('click', cerrarLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) cerrarLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !lightbox.hidden) cerrarLightbox();
+        });
+
+        // Cargar imágenes
         document.addEventListener('DOMContentLoaded', async () => {
             const gridGaleria = document.getElementById('grid-galeria');
-            const lightbox    = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            const btnClose    = lightbox.querySelector('.lightbox-close');
-
-            // ===== LIGHTBOX =====
-            function abrirLightbox(src) {
-                lightboxImg.src = src;
-                lightbox.hidden = false;
-                document.body.style.overflow = 'hidden';
-            }
-            function cerrarLightbox() {
-                lightbox.hidden = true;
-                lightboxImg.src = '';
-                document.body.style.overflow = '';
-            }
-            btnClose.addEventListener('click', cerrarLightbox);
-            lightbox.addEventListener('click', (e) => {
-                if (e.target === lightbox) cerrarLightbox();
-            });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !lightbox.hidden) cerrarLightbox();
-            });
-
-            // ===== CARGAR IMÁGENES =====
+            
             try {
                 const response = await fetch('/api/imagenes');
                 const data = await response.json();
@@ -182,18 +188,27 @@
                     data.imagenes.forEach(img => {
                         const item = document.createElement('div');
                         item.className = 'galeria-item';
-                        item.innerHTML = `<img src="${img.url}" alt="${img.nombreOriginal}">`;
+                        
+                        // Creamos la imagen y le asignamos el evento CLICK DIRECTO
+                        const imgEl = document.createElement('img');
+                        imgEl.src = img.url;
+                        imgEl.alt = img.nombreOriginal;
+                        
+                        // Usamos onclick en el elemento para forzar que no abra otra pestaña
+                        imgEl.onclick = function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.abrirLightbox(img.url);
+                        };
 
-                        // 👉 Lightbox en lugar de nueva pestaña
-                        item.addEventListener('click', () => abrirLightbox(img.url));
-
+                        item.appendChild(imgEl);
                         gridGaleria.appendChild(item);
                     });
                 } else {
-                    gridGaleria.innerHTML = '<p class="vacio" style="text-align:center; width:100%;">Aún no hay imágenes en la galería. Sube algunas desde el panel de administración.</p>';
+                    gridGaleria.innerHTML = '<p class="vacio" style="text-align:center; width:100%;">Aún no hay imágenes en la galería.</p>';
                 }
             } catch (error) {
-                console.error("Error al cargar la galería:", error);
+                console.error("Error:", error);
                 gridGaleria.innerHTML = '<p class="vacio" style="text-align:center; width:100%; color: red;">Error de conexión al cargar las imágenes.</p>';
             }
         });
