@@ -59,7 +59,7 @@
         @keyframes lbZoom { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
         .card-img img { cursor: zoom-in; }
-
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -101,7 +101,7 @@
     <section class="catalogo">
         <div class="container">
 
-            <!-- Filtros actualizados -->
+            <!-- Filtros -->
             <div class="filtros">
                 <button class="filtro-btn active" data-categoria="todos">Todos</button>
                 <button class="filtro-btn" data-categoria="vasos-vinil">Color de Vasos y Tonos de Vinil</button>
@@ -116,7 +116,9 @@
                 <!-- Producto estático de ejemplo -->
                 <article class="card-producto" data-categoria="vasos-vinil">
                     <div class="card-img">
+                        <!-- Se agrega onclick directo a la imagen estática -->
                         <img src="img/productos/vaso1.jpg" alt="Vasos y Vinil"
+                             onclick="event.preventDefault(); window.abrirLightbox(this.src);"
                              onerror="this.src='https://via.placeholder.com/400x300/0a192f/d4af37?text=Vasos+y+Vinil'">
                     </div>
                     <div class="card-body">
@@ -167,7 +169,7 @@
         </div>
     </footer>
 
-    <!-- LIGHTBOX -->
+    <!-- LIGHTBOX HTML -->
     <div id="lightbox" class="lightbox" hidden>
         <button class="lightbox-close" aria-label="Cerrar">✕</button>
         <img id="lightbox-img" class="lightbox-img" alt="Vista previa">
@@ -176,63 +178,67 @@
     <script src="js/main.js"></script>
 
     <script>
+        // Declaramos las variables del Lightbox de forma global
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const btnClose = document.querySelector('.lightbox-close');
+
+        // Función para abrir
+        window.abrirLightbox = function(url) {
+            lightboxImg.src = url;
+            lightbox.hidden = false;
+            document.body.style.overflow = 'hidden';
+        };
+
+        // Función para cerrar
+        function cerrarLightbox() {
+            lightbox.hidden = true;
+            lightboxImg.src = '';
+            document.body.style.overflow = '';
+        }
+
+        // Eventos para cerrar el lightbox
+        btnClose.addEventListener('click', cerrarLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) cerrarLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !lightbox.hidden) cerrarLightbox();
+        });
+
+        // Cargar imágenes dinámicas y activar filtros
         document.addEventListener('DOMContentLoaded', async () => {
             const grid = document.getElementById('grid-productos');
-            const lightbox    = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            const btnClose    = lightbox.querySelector('.lightbox-close');
-
-            // ===== LIGHTBOX =====
-            function abrirLightbox(src) {
-                lightboxImg.src = src;
-                lightbox.hidden = false;
-                document.body.style.overflow = 'hidden';
-            }
-            function cerrarLightbox() {
-                lightbox.hidden = true;
-                lightboxImg.src = '';
-                document.body.style.overflow = '';
-            }
-            btnClose.addEventListener('click', cerrarLightbox);
-            lightbox.addEventListener('click', (e) => {
-                if (e.target === lightbox) cerrarLightbox();
-            });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !lightbox.hidden) cerrarLightbox();
-            });
-
-            // ===== 1. CARGAR IMÁGENES =====
+            
+            // 1. Cargar imágenes del servidor
             try {
                 const response = await fetch('/api/imagenes');
                 const data = await response.json();
-
+                
                 if (data.ok && data.imagenes.length > 0) {
                     data.imagenes.forEach(img => {
                         let categoria = 'otros';
                         const nombreMin = img.nombreOriginal.toLowerCase();
-
-                        // VASOS + VINIL ahora son la misma categoría
-                        if (nombreMin.includes('vaso') || nombreMin.includes('taza') ||
-                            nombreMin.includes('vinil') || nombreMin.includes('tono')) {
+                        
+                        if (nombreMin.includes('vaso') || nombreMin.includes('taza') || nombreMin.includes('vinil') || nombreMin.includes('tono')) {
                             categoria = 'vasos-vinil';
                         } else if (nombreMin.includes('llavero')) {
                             categoria = 'llaveros';
                         } else if (nombreMin.includes('destapador')) {
                             categoria = 'destapadores';
-                        } else if (nombreMin.includes('pulsera') || nombreMin.includes('pvc') ||
-                                   nombreMin.includes('otros')) {
+                        } else if (nombreMin.includes('pulsera') || nombreMin.includes('pvc') || nombreMin.includes('otros')) {
                             categoria = 'pulseras';
                         }
-
+                        
                         const titulo = img.nombreOriginal.replace(/\.[^/.]+$/, "").replace(/-/g, " ");
-
                         const card = document.createElement('article');
                         card.className = 'card-producto';
                         card.dataset.categoria = categoria;
-
+                        
+                        // Asignación de Onclick directo en el string HTML
                         card.innerHTML = `
                             <div class="card-img">
-                                <img src="${img.url}" alt="${titulo}">
+                                <img src="${img.url}" alt="${titulo}" onclick="event.preventDefault(); event.stopPropagation(); window.abrirLightbox('${img.url}')">
                             </div>
                             <div class="card-body">
                                 <h3 style="text-transform: capitalize;">${titulo}</h3>
@@ -243,7 +249,7 @@
                                 </a>
                             </div>
                         `;
-
+                        
                         grid.appendChild(card);
                     });
                 }
@@ -251,13 +257,8 @@
                 console.error("Error al cargar imágenes:", error);
             }
 
-            // ===== 2. LIGHTBOX PARA TODAS LAS IMÁGENES (estáticas + dinámicas) =====
-            grid.querySelectorAll('.card-img img').forEach(img => {
-                img.addEventListener('click', () => abrirLightbox(img.src));
-            });
-
-            // ===== 3. FILTROS =====
-            const filtros  = document.querySelectorAll('.filtro-btn');
+            // 2. Activar filtros
+            const filtros = document.querySelectorAll('.filtro-btn');
             const productos = document.querySelectorAll('#grid-productos .card-producto');
 
             filtros.forEach(boton => {
