@@ -18,16 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ===== FORMULARIO DE CONTACTO =====
+    // ===== FORMULARIO DE CONTACTO (ENVÍO A WHATSAPP) =====
     const form = document.getElementById('formulario-contacto');
     if (form) {
         form.addEventListener('submit', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Evita que la página se recargue
 
             const nombre = document.getElementById('nombre').value.trim();
             const correo = document.getElementById('correo').value.trim();
             const mensaje = document.getElementById('mensaje').value.trim();
 
+            // Validar que no estén vacíos
             if (!nombre || !correo || !mensaje) {
                 alert('Por favor, completa todos los campos.');
                 return;
@@ -40,13 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Simulación de envío (aquí se conectaría con backend o servicio de correo)
-            alert(`¡Gracias, ${nombre}! Tu mensaje ha sido enviado. Te contactaremos pronto.`);
+            // Armamos el texto que te llegará a tu WhatsApp
+            const texto = `¡Hola HJC! Soy *${nombre}*.\nMi correo es: ${correo}\n\n*Mensaje:*\n${mensaje}`;
+            
+            // Número de WhatsApp (52 = México, seguido de tus 10 dígitos)
+            const telefono = "525554735491";
+            
+            // Abrimos WhatsApp en una nueva pestaña con el mensaje listo
+            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`, '_blank');
+            
+            // Limpiamos el formulario después de enviar
             form.reset();
-
-            // Opción: redirigir a WhatsApp con el mensaje
-            // const texto = `Hola, soy ${nombre}. ${mensaje} Mi correo: ${correo}`;
-            // window.open(`https://wa.me/52XXXXXXXXXX?text=${encodeURIComponent(texto)}`, '_blank');
         });
     }
 
